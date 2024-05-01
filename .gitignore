@@ -132,6 +132,3 @@ dmypy.json
 # config file 
 
 config.py
-
-*.json
-*.db
