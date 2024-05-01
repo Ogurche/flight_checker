@@ -72,7 +72,6 @@ def full_tables(db_:DbConnection):
     df = pd.concat([csv_airlines['code'], csv_airlines['name_translations'].map(lambda x: x['en'])], axis=1)
     df.to_sql('airlines', db_.connection, if_exists='replace', index=True)
 
-
 def main():
     db_ = DbConnection()
     init_db(db_)
