@@ -25,14 +25,14 @@ class db_usage:
         self.db_connection =db_con
     def decode(self, data:str):
         """
-        API принимает коды аэропортов для вылета и прилета. 
+        API принимает название аэропорта отдает код. 
         Получает строку, отдает код 
         return short_code of airport
         """
         data = f'%{data.strip().title()}%'
         result = self.db_connection.select_qr('SELECT code FROM airports WHERE name LIKE ? ORDER BY code',data)
         if len(result) == 0:
-            return 'ОшибОчка'
+            return None
         elif len(result) == 1:
             return result[0]
         else:
@@ -40,6 +40,11 @@ class db_usage:
                 return result[0:5]
             else:
                 return result[0]
+    def save_request(self, data: dict):
+        """
+        Сохранение запроса в БД
+        """
+        self.db_connection.execute_qr(f"INSERT INTO requests (origin, destination, dep_date, person_id) VALUES ({data['origin']}, {data['destination']}, '{data['dep_date']}', {data['person_id']})")
 
 def init_db(db_:DbConnection):
 
@@ -59,7 +64,7 @@ def init_db(db_:DbConnection):
 
     # Airlines: справочник авиакомпаний 
     db_.execute_qr('CREATE TABLE IF NOT EXISTS airlines (id INTEGER PRIMARY KEY AUTOINCREMENT, code vacrchar, name varchar);')
-    # df.to_sql('airports', connection, if_exists='replace', index=True)
+    
 
 def full_tables(db_:DbConnection):
     path = os.environ.get('PATH')
