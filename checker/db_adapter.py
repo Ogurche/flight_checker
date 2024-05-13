@@ -44,7 +44,9 @@ class db_usage:
         """
         Сохранение запроса в БД
         """
-        self.db_connection.execute_qr(f"INSERT INTO requests (origin, destination, dep_date, person_id) VALUES ({data['origin']}, {data['destination']}, '{data['dep_date']}', {data['person_id']})")
+        query = "INSERT INTO requests (origin, destination, dep_date, person_id)"\
+                f"VALUES ({data['origin']}, {data['destination']}, '{data['dep_date']}', {data['user_id']})"
+        self.db_connection.execute_qr(query)
 
 def init_db(db_:DbConnection):
 
@@ -81,3 +83,6 @@ def main():
     db_ = DbConnection()
     init_db(db_)
     full_tables(db_)
+
+uis = DbConnection()
+print(uis.select_qr('select * from requests'))

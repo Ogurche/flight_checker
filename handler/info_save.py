@@ -6,8 +6,8 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from sys_files.bot_creation import dp
-from checker.db_adapter import DbConnection
+from sys_files.bot_creation import dp, bot
+from checker.db_adapter import DbConnection, db_usage
 
 # yes_no = ['Да','Нет']
 
@@ -29,8 +29,8 @@ async def request_validation(message:types.Message, state: FSMContext):
     #TODO: Text validation
     # 1. If have incorrect number of params send message
     departure_from , arrival_at , date = map(str.strip, message.text.split(','))
-    data_dict = {'departure': departure_from, 'arrival': arrival_at, 'date': date}
-
+    data_dict = {'origin': departure_from, 'destination': arrival_at, 'dep_date': date, 'user_id':message.from_user.id}
+    
     #TODO: Make validation
     # 1. Departure. db_adabter.db_usage.decode() (return list or None)
     # 2. Arrival db_adabter.db_usage.decode() (return list or None)
@@ -48,7 +48,10 @@ async def request_validation(message:types.Message, state: FSMContext):
 async def requesr_agree (message:types.Message, state: FSMContext):
     if message.text == 'Да':
         await message.answer('Запрос сохранен')
-        #TODO: SAVE data        
+        #TODO: SAVE data   
+        saver = db_usage(DbConnection)    
+        data_dict = await state.get_data()
+        saver.save_request(data_dict)
         # DbConnection.
         await state.clear()
     if message.text == 'Нет':
