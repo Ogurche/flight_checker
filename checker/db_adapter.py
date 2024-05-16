@@ -71,11 +71,11 @@ def init_db(db_:DbConnection):
 def full_tables(db_:DbConnection):
     path = os.environ.get('PATH')
     # Создаем df для заполнения таблицы
-    csv_ = pd.read_json(path + 'airports.json')
+    csv_ = pd.read_json(path + '\\airports.json')
     df = pd.concat([csv_['city_code'], csv_['country_code'],csv_['code'], csv_['name']], axis=1)
     df.to_sql('airports', db_.connection, if_exists='replace', index=True)
 
-    csv_airlines = pd.read_json(path + 'airlines.json')
+    csv_airlines = pd.read_json(path + '\\airlines.json')
     df = pd.concat([csv_airlines['code'], csv_airlines['name_translations'].map(lambda x: x['en'])], axis=1)
     df.to_sql('airlines', db_.connection, if_exists='replace', index=True)
 
