@@ -47,11 +47,12 @@ async def request_validation(message:types.Message, state: FSMContext):
 
 async def requesr_agree (message:types.Message, state: FSMContext):
     if message.text == 'Да':
-        await message.answer('Запрос сохранен')
-        #TODO: SAVE data   
-        saver = db_usage(DbConnection)    
+    #TODO: SAVE data   
+        saver = db_usage(DbConnection())    
         data_dict = await state.get_data()
-        saver.save_request(data_dict)
+        saver.save_request(data_dict)   
+        await message.answer('Запрос сохранен')
+
         # DbConnection.
         await state.clear()
     if message.text == 'Нет':
